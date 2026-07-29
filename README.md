@@ -127,6 +127,8 @@ python donetick_import.py --labels-map labels.json   # real import, with room la
 
 Each chore's description also gets a line like `[BeTidy] Room: X · Repeats: Y · Assignee: Z · Effort: N` so nothing is lost even when a field has no Donetick equivalent.
 
+> The Donetick-side API details this import relies on — and a suggestion for first-party "import from other apps" support — are shared upstream in [donetick/donetick#753](https://github.com/donetick/donetick/issues/753). See [`docs/donetick-import.md`](docs/donetick-import.md) for the full mapping and API quirks.
+
 ## Disclaimer
 
 This is an **unofficial** tool for **personal data portability**. It is **not affiliated with, endorsed by, or connected to** BeTidy or Donetick.
