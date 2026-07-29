@@ -1,0 +1,12 @@
+# secrets & personal data — never commit these
+.env
+/betidy_export.json
+/*.csv
+/*.sqlite
+token.txt
+full_import*.log
+
+# python
+.venv/
+__pycache__/
+*.pyc

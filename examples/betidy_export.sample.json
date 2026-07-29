@@ -1,0 +1,67 @@
+{
+  "identityId": "00000000-1111-2222-3333-444444444444",
+  "user": {
+    "identityId": "00000000-1111-2222-3333-444444444444",
+    "name": "Alice",
+    "email": "alice@example.com",
+    "dataPrivacy": "{}",
+    "rooms": "[{\"active\":true,\"id\":\"kitchen\",\"name\":\"Kitchen\",\"type\":\"kueche\"},{\"active\":true,\"id\":\"bathroom\",\"name\":\"Bathroom\",\"type\":\"badezimmer\"},{\"active\":true,\"id\":\"allgemein\",\"name\":\"General\",\"type\":\"allgemein\"}]",
+    "profiles": "[{\"active\":true,\"id\":\"aaaa1111\",\"name\":\"Alice\",\"limited\":false,\"notificationActive\":false},{\"active\":true,\"id\":\"bbbb2222\",\"name\":\"Bob\",\"limited\":false,\"notificationActive\":false}]",
+    "pro": "{}",
+    "packages": "[]",
+    "holidays": "[]",
+    "createdAt": "2025-01-01T10:00:00.000Z",
+    "updatedAt": "2025-01-01T10:00:00.000Z"
+  },
+  "tasks": [
+    {
+      "id": "task-0001", "identityId": "00000000-1111-2222-3333-444444444444",
+      "active": true, "templateId": "betidy_pro_task1", "title": "Take out the trash",
+      "roomId": "allgemein", "projectId": null, "type": "INTERVAL", "important": 0,
+      "intervalUnit": "week", "intervalCount": 1, "lastTodoDate": "2025-06-02",
+      "todoDate": "2025-01-06", "finishedDate": null, "description": "",
+      "assigned": ["bbbb2222"], "creator": "aaaa1111", "effort": 0,
+      "lastHistoryId": null, "lastSkipDate": null, "days": [1],
+      "createdAt": "2025-01-01T10:00:00.000Z", "updatedAt": "2025-06-02T10:00:00.000Z"
+    },
+    {
+      "id": "task-0002", "identityId": "00000000-1111-2222-3333-444444444444",
+      "active": true, "templateId": "betidy_pro_task2", "title": "Clean the oven",
+      "roomId": "kitchen", "projectId": null, "type": "INTERVAL", "important": 1,
+      "intervalUnit": "month", "intervalCount": 3, "lastTodoDate": null,
+      "todoDate": "2025-03-01", "finishedDate": null, "description": "Use the self-clean cycle",
+      "assigned": ["aaaa1111", "bbbb2222"], "creator": "aaaa1111", "effort": 2,
+      "lastHistoryId": null, "lastSkipDate": null, "days": null,
+      "createdAt": "2025-01-01T10:00:00.000Z", "updatedAt": "2025-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "task-0003", "identityId": "00000000-1111-2222-3333-444444444444",
+      "active": true, "templateId": "betidy_pro_task3", "title": "Descale the shower head",
+      "roomId": "bathroom", "projectId": null, "type": "INTERVAL", "important": 2,
+      "intervalUnit": "month", "intervalCount": 6, "lastTodoDate": null,
+      "todoDate": "2025-02-15", "finishedDate": null, "description": "",
+      "assigned": ["aaaa1111"], "creator": "aaaa1111", "effort": 1,
+      "lastHistoryId": null, "lastSkipDate": null, "days": null,
+      "createdAt": "2025-01-01T10:00:00.000Z", "updatedAt": "2025-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "task-0004", "identityId": "00000000-1111-2222-3333-444444444444",
+      "active": true, "templateId": null, "title": "Water the plants",
+      "roomId": "allgemein", "projectId": null, "type": "INTERVAL", "important": 0,
+      "intervalUnit": "day", "intervalCount": 2, "lastTodoDate": null,
+      "todoDate": "2025-01-02", "finishedDate": null, "description": "",
+      "assigned": ["aaaa1111", "bbbb2222"], "creator": "bbbb2222", "effort": 0,
+      "lastHistoryId": null, "lastSkipDate": null, "days": null,
+      "createdAt": "2025-01-01T10:00:00.000Z", "updatedAt": "2025-01-01T10:00:00.000Z"
+    }
+  ],
+  "projects": [],
+  "history": [
+    {
+      "id": "hist-0001", "identityId": "00000000-1111-2222-3333-444444444444",
+      "taskId": "task-0001", "effort": 0, "profileId": "bbbb2222", "time": "2025-06-02T09:00:00Z",
+      "isProject": false, "roomType": "allgemein", "title": "Take out the trash",
+      "templateId": "betidy_pro_task1", "createdAt": "2025-06-02T09:00:00Z", "updatedAt": "2025-06-02T09:00:00Z"
+    }
+  ]
+}

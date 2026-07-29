@@ -1,0 +1,5 @@
+﻿id,title,description,room,assignee,room_id,type,frequency,interval_unit,interval_count,weekdays,todo_date,last_todo_date,finished_date,last_skip_date,important,effort,active,creator,template_id,created_at,updated_at
+task-0003,Descale the shower head,,Bathroom,Alice,bathroom,INTERVAL,every 6 months,month,6,,2025-02-15,,,,2,1,True,Alice,betidy_pro_task3,2025-01-01T10:00:00.000Z,2025-01-01T10:00:00.000Z
+task-0001,Take out the trash,,General,Bob,allgemein,INTERVAL,every week (Mon),week,1,Mon,2025-01-06,2025-06-02,,,0,0,True,Alice,betidy_pro_task1,2025-01-01T10:00:00.000Z,2025-06-02T10:00:00.000Z
+task-0004,Water the plants,,General,"Alice, Bob",allgemein,INTERVAL,every 2 days,day,2,,2025-01-02,,,,0,0,True,Bob,,2025-01-01T10:00:00.000Z,2025-01-01T10:00:00.000Z
+task-0002,Clean the oven,Use the self-clean cycle,Kitchen,"Alice, Bob",kitchen,INTERVAL,every 3 months,month,3,,2025-03-01,,,,1,2,True,Alice,betidy_pro_task2,2025-01-01T10:00:00.000Z,2025-01-01T10:00:00.000Z
