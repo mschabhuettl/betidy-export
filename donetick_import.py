@@ -31,19 +31,21 @@ Environment:
     BETIDY_TZ                       IANA timezone for due dates (default: UTC)
     BETIDY_DUE_HOUR                 hour-of-day for due dates, 0-23 (default: 8)
 """
-import os
-import sys
-import json
-import time
+
 import argparse
 import datetime as dt
+import json
+import os
+import sys
+import time
 from zoneinfo import ZoneInfo
+
 import requests
 
 URL = os.environ.get("DONETICK_URL", "").rstrip("/")
 TOKEN = os.environ.get("DONETICK_TOKEN", "")
 TZ = os.environ.get("BETIDY_TZ", "UTC")
-ZONE = ZoneInfo(TZ)                                  # correct UTC offset incl. DST per date
+ZONE = ZoneInfo(TZ)  # correct UTC offset incl. DST per date
 DUE_HOUR = int(os.environ.get("BETIDY_DUE_HOUR", "8"))
 
 ap = argparse.ArgumentParser(description="Import BeTidy tasks into Donetick.")
@@ -79,7 +81,7 @@ tasks = [t for t in d["tasks"] if (t.get("active") or args.include_inactive)]
 if args.room:
     tasks = [t for t in tasks if rooms.get(t.get("roomId")) == args.room]
 if args.limit:
-    tasks = tasks[:args.limit]
+    tasks = tasks[: args.limit]
 
 WD = {1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat", 7: "Sun"}
 UNIT = {"day": "days", "week": "weeks", "month": "months"}
@@ -132,8 +134,8 @@ def next_due(t, today):
         else:
             break
         guard += 1
-    if unit == "week" and t.get("days"):                 # snap to the intended weekday
-        targets = {x - 1 for x in t["days"]}             # BeTidy 1=Mon..7=Sun -> Python Mon=0
+    if unit == "week" and t.get("days"):  # snap to the intended weekday
+        targets = {x - 1 for x in t["days"]}  # BeTidy 1=Mon..7=Sun -> Python Mon=0
         for _ in range(7):
             if date.weekday() in targets:
                 break
@@ -173,8 +175,8 @@ def get_members():
             if nm:
                 nm = nm.strip().lower()
                 out.setdefault(nm, uid)
-                out.setdefault(nm.split()[0], uid)       # first name: "jane doe" -> "jane"
-                out.setdefault(nm.split(".")[0], uid)    # username token: "j.doe" -> "j"
+                out.setdefault(nm.split()[0], uid)  # first name: "jane doe" -> "jane"
+                out.setdefault(nm.split(".")[0], uid)  # username token: "j.doe" -> "j"
     return out
 
 
@@ -195,8 +197,14 @@ def discover_labels(max_id=120):
             api("DELETE", f"/eapi/v1/chore/{c['id']}")
 
     found = {}
-    base = {"name": "__label_probe__", "frequencyType": "once", "frequency": 1,
-            "frequencyMetadata": {"timezone": TZ}, "assignStrategy": "random", "isActive": True}
+    base = {
+        "name": "__label_probe__",
+        "frequencyType": "once",
+        "frequency": 1,
+        "frequencyMetadata": {"timezone": TZ},
+        "assignStrategy": "random",
+        "isActive": True,
+    }
     for i in range(1, max_id + 1):
         r = api("POST", "/api/v1/chores", json={**base, "labelsV2": [{"id": i}]})
         if r.status_code not in (200, 201):
@@ -204,7 +212,7 @@ def discover_labels(max_id=120):
         cid = (r.json() or {}).get("res")
         g = api("GET", f"/api/v1/chores/{cid}").json()
         chore = g.get("res", g) if isinstance(g, dict) else g
-        for L in (chore.get("labelsV2") or []):
+        for L in chore.get("labelsV2") or []:
             found[L["id"]] = L.get("name")
         api("DELETE", f"/eapi/v1/chore/{cid}")
     return found
@@ -213,10 +221,12 @@ def discover_labels(max_id=120):
 def main():
     if args.discover_labels:
         labels = discover_labels()
-        print(json.dumps({name: i for i, name in sorted(labels.items(), key=lambda x: x[0])},
-                         ensure_ascii=False, indent=2))
-        print(f"\n{len(labels)} labels found. Build a --labels-map JSON of "
-              f'{{"<BeTidy room name>": <label id>}}.')
+        print(
+            json.dumps(
+                {name: i for i, name in sorted(labels.items(), key=lambda x: x[0])}, ensure_ascii=False, indent=2
+            )
+        )
+        print(f'\n{len(labels)} labels found. Build a --labels-map JSON of {{"<BeTidy room name>": <label id>}}.')
         return
 
     room_label = {}
@@ -244,9 +254,11 @@ def main():
         due = next_due(t, today)
 
         desc = [t.get("description") or ""]
-        desc.append(f"[BeTidy] Room: {room} · Repeats: {freq_text(t)}"
-                    + (f" · Assignee: {', '.join(assignee_names)}" if assignee_names else "")
-                    + (f" · Effort: {t.get('effort')}" if t.get("effort") else ""))
+        desc.append(
+            f"[BeTidy] Room: {room} · Repeats: {freq_text(t)}"
+            + (f" · Assignee: {', '.join(assignee_names)}" if assignee_names else "")
+            + (f" · Effort: {t.get('effort')}" if t.get("effort") else "")
+        )
         description = "\n".join(p for p in desc if p).strip()
 
         label_ids = [{"id": room_label[room]}] if room in room_label else []
@@ -303,8 +315,10 @@ def main():
         print(f"[{i:3}/{len(tasks)}] OK  id={cid} {name[:44]}{due_note}")
         time.sleep(0.15)
 
-    print(f"\nDone. created={ok} failed={fail} skipped={skip} (of {len(tasks)} tasks)"
-          + ("  [DRY RUN — nothing sent]" if args.dry_run else ""))
+    print(
+        f"\nDone. created={ok} failed={fail} skipped={skip} (of {len(tasks)} tasks)"
+        + ("  [DRY RUN — nothing sent]" if args.dry_run else "")
+    )
 
 
 if __name__ == "__main__":

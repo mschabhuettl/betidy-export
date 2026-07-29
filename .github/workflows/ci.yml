@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ruff
+        run: pip install ruff==0.16.0
+      - name: Ruff lint
+        run: ruff check .
+      - name: Ruff format check
+        run: ruff format --check .
+
+  compile:
+    name: Byte-compile (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Byte-compile the scripts
+        run: python -m py_compile betidy_extract.py build_exports.py donetick_import.py
+
+  smoke:
+    name: Smoke test (sample data)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Build CSV / SQLite from the sample bundle
+        env:
+          BETIDY_OUTFILE: examples/betidy_export.sample.json
+        run: python build_exports.py
+      - name: Dry-run the Donetick import
+        env:
+          BETIDY_OUTFILE: examples/betidy_export.sample.json
+          DONETICK_URL: https://donetick.example.com
+          BETIDY_TZ: Europe/Vienna
+        run: python donetick_import.py --dry-run

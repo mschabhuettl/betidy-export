@@ -1,5 +1,7 @@
 # betidy-export
 
+[![CI](https://github.com/mschabhuettl/betidy-export/actions/workflows/ci.yml/badge.svg)](https://github.com/mschabhuettl/betidy-export/actions/workflows/ci.yml)
+
 **Liberate your chores from the BeTidy app — export to CSV / JSON / SQLite, and optionally import into Donetick.**
 
 [BeTidy](https://betidy.io) (`io.betidy.BeTidy`) is an Android cleaning-schedule / chores app with **no export feature and no documented API**. `betidy-export` is a small, unofficial toolkit that authenticates as *you* — with your own credentials — reads *only your own* data out of BeTidy's cloud backend, and writes it to open formats you control. It can also, optionally, import your tasks into a self-hosted [Donetick](https://github.com/donetick/donetick) instance with full recurrence, assignee and priority fidelity.
@@ -132,6 +134,18 @@ This is an **unofficial** tool for **personal data portability**. It is **not af
 - **Use only with your own account.** The scripts authenticate with *your* credentials and read *only* your own records.
 - **The BeTidy app configuration in these scripts is not secret.** The Cognito, identity-pool and AppSync identifiers are public client configuration embedded in the freely downloadable APK — identical for every user.
 - **No warranty.** BeTidy has no documented API and may change or break this tool at any time. Use it at your own risk, and respect the app's Terms of Service.
+
+## Development
+
+The scripts are linted and formatted with [ruff](https://docs.astral.sh/ruff/), and
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the linter, a
+byte-compile on Python 3.9 and 3.12, and a smoke test against the sample data.
+
+```bash
+pip install ruff
+ruff check .           # lint
+ruff format .          # auto-format
+```
 
 ## License
 

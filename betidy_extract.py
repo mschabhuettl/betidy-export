@@ -20,8 +20,10 @@ Usage:
 
 See docs/how-it-works.md for the reverse-engineering details.
 """
-import os
+
 import json
+import os
+
 import boto3
 import requests
 from botocore import UNSIGNED
@@ -41,7 +43,7 @@ try:
     EMAIL = os.environ["BETIDY_EMAIL"]
     PASSWORD = os.environ["BETIDY_PASSWORD"]
 except KeyError as e:
-    raise SystemExit(f"Missing env var {e}. Set BETIDY_EMAIL and BETIDY_PASSWORD.")
+    raise SystemExit(f"Missing env var {e}. Set BETIDY_EMAIL and BETIDY_PASSWORD.") from None
 
 
 def authenticate():
@@ -64,13 +66,15 @@ def resolve_identity_id(id_token):
 
 
 # GraphQL field selections for each Amplify model (see docs/data-model.md).
-TASK_FIELDS = ("id identityId active templateId title roomId projectId type important intervalUnit "
-               "intervalCount lastTodoDate todoDate finishedDate description assigned creator effort "
-               "lastHistoryId lastSkipDate days createdAt updatedAt")
-PROJECT_FIELDS = ("id identityId templateId roomId title startDate type beforeImage afterImage creator "
-                  "createdAt updatedAt")
-HISTORY_FIELDS = ("id identityId taskId effort profileId time isProject roomType title templateId "
-                  "createdAt updatedAt")
+TASK_FIELDS = (
+    "id identityId active templateId title roomId projectId type important intervalUnit "
+    "intervalCount lastTodoDate todoDate finishedDate description assigned creator effort "
+    "lastHistoryId lastSkipDate days createdAt updatedAt"
+)
+PROJECT_FIELDS = (
+    "id identityId templateId roomId title startDate type beforeImage afterImage creator createdAt updatedAt"
+)
+HISTORY_FIELDS = "id identityId taskId effort profileId time isProject roomType title templateId createdAt updatedAt"
 USER_FIELDS = "identityId name email dataPrivacy rooms profiles pro packages holidays createdAt updatedAt"
 
 
@@ -81,8 +85,7 @@ def main():
     print(f"Authenticated. identityId = {identity_id}")
 
     def gql(query, variables=None):
-        r = requests.post(APPSYNC_URL, headers=headers,
-                          json={"query": query, "variables": variables or {}}, timeout=60)
+        r = requests.post(APPSYNC_URL, headers=headers, json={"query": query, "variables": variables or {}}, timeout=60)
         data = r.json()
         if "errors" in data:
             raise RuntimeError(json.dumps(data["errors"])[:1000])
@@ -92,9 +95,11 @@ def main():
         """Query a `<model>ByIdentityId` GSI, following nextToken. Scoping by identity
         id is essential — the unfiltered list* queries scan the whole shared table."""
         items, token = [], None
-        query = (f"query Q($id:String!,$limit:Int,$next:String){{ "
-                 f"{query_field}(identityId:$id,limit:$limit,nextToken:$next){{ "
-                 f"items{{ {fields} }} nextToken }} }}")
+        query = (
+            f"query Q($id:String!,$limit:Int,$next:String){{ "
+            f"{query_field}(identityId:$id,limit:$limit,nextToken:$next){{ "
+            f"items{{ {fields} }} nextToken }} }}"
+        )
         while True:
             page = gql(query, {"id": identity_id, "limit": 1000, "next": token})[query_field]
             items.extend(page["items"])
@@ -106,14 +111,13 @@ def main():
     tasks = by_identity("userTasksByIdentityId", TASK_FIELDS)
     projects = by_identity("userProjectsByIdentityId", PROJECT_FIELDS)
     history = by_identity("taskHistoriesByIdentityId", HISTORY_FIELDS)
-    user_record = gql(f"query G($id:ID!){{ getUser(identityId:$id){{ {USER_FIELDS} }} }}",
-                      {"id": identity_id})["getUser"]
+    user_record = gql(f"query G($id:ID!){{ getUser(identityId:$id){{ {USER_FIELDS} }} }}", {"id": identity_id})[
+        "getUser"
+    ]
 
-    print(f"tasks={len(tasks)} projects={len(projects)} history={len(history)} "
-          f"user={'yes' if user_record else 'no'}")
+    print(f"tasks={len(tasks)} projects={len(projects)} history={len(history)} user={'yes' if user_record else 'no'}")
 
-    bundle = {"identityId": identity_id, "user": user_record,
-              "tasks": tasks, "projects": projects, "history": history}
+    bundle = {"identityId": identity_id, "user": user_record, "tasks": tasks, "projects": projects, "history": history}
     with open(OUTFILE, "w", encoding="utf-8") as f:
         json.dump(bundle, f, ensure_ascii=False, indent=2)
     print(f"Wrote {OUTFILE}")

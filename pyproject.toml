@@ -1,0 +1,14 @@
+[project]
+name = "betidy-export"
+version = "1.0.0"
+description = "Export your tasks from the BeTidy app (CSV/JSON/SQLite) and optionally import them into Donetick."
+requires-python = ">=3.9"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+# Lint the scripts only — docs contain illustrative code snippets, not source.
+extend-exclude = ["docs", "examples", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
