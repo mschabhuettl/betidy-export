@@ -42,6 +42,26 @@ Copy `.env.example` to `.env` for reference, or just export the variables shown 
 
 ## Usage
 
+### Quick: one command (extract + import)
+
+If you just want everything in Donetick in a single step, use the wrapper. It runs
+the extract and import back-to-back; your BeTidy credentials are used only for the
+local login and are **never sent to Donetick**:
+
+```bash
+export BETIDY_EMAIL="you@example.com"
+export BETIDY_PASSWORD="your-betidy-password"
+export DONETICK_URL="https://donetick.example.com"
+export DONETICK_TOKEN="your-donetick-access-token"
+
+python betidy_to_donetick.py --dry-run             # preview end-to-end
+python betidy_to_donetick.py --labels-map labels.json   # real migration
+```
+
+Any flags are passed through to the import step (`--labels-map`, `--dry-run`,
+`--limit`, `--skip-existing`, `--include-inactive`, …). Prefer the individual steps
+below if you want to inspect `betidy_export.json` / the CSVs in between.
+
 ### 1. Export from BeTidy
 
 ```bash
